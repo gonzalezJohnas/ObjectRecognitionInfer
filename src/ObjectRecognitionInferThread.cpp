@@ -63,7 +63,7 @@ ObjectRecognitionInferThread::~ObjectRecognitionInferThread() {
 
 bool ObjectRecognitionInferThread::threadInit() {
 
-    if (!inputImagePort.open("/infer/imageRGB:i")) {
+    if (!inputImagePort.open(getName("/imageRGB:i").c_str())) {
         std::cout << ": unable to open port /imageRGB:i " << std::endl;
         return false;  // unable to open; let RFModule know so that it won't run
     }

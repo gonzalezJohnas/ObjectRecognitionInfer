@@ -91,6 +91,8 @@ bool ObjectRecognitionInferModule::configure(yarp::os::ResourceFinder &rf) {
     }
 
     inferThread = std::unique_ptr<ObjectRecognitionInferThread>(new ObjectRecognitionInferThread(rf));
+    inferThread->setName(handlerPortName);
+
 
     if(!inferThread->threadInit()){
         yError("Unable to initialize the thread");
