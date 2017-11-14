@@ -37,26 +37,24 @@ using namespace std;
 ObjectRecognitionInferThread::ObjectRecognitionInferThread(yarp::os::ResourceFinder &rf) : RateThread(THRATE) {
     robot = "icub";
 
-    // Check the paramters to load the graph and associated labels
-    if (!rf.find("graph_path").isNull() && !rf.find("labels_path").isNull()) {
         const string graphPath = rf.find("graph_path").asString().c_str();
         const string labelsPath = rf.find("labels_path").asString().c_str();
+        const string modelName = rf.find("model_name").asString().c_str();
 
-        tensorFlowInference = std::unique_ptr<TensorFlowInference>(new TensorFlowInference(graphPath, labelsPath));
-    }
+        tensorFlowInference = std::unique_ptr<TensorFlowInference>(new TensorFlowInference(graphPath, labelsPath, modelName));
+
 }
 
 ObjectRecognitionInferThread::ObjectRecognitionInferThread(yarp::os::ResourceFinder &rf, string _robot, string _configFile) : RateThread(THRATE) {
     robot = _robot;
     configFile = _configFile;
 
-    // Check the paramters to load the graph and associated labels
-    if (!rf.find("graph_path").isNull() && !rf.find("labels_path").isNull()) {
         const string graphPath = rf.find("graph_path").asString().c_str();
         const string labelsPath = rf.find("labels_path").asString().c_str();
+        const string modelName = rf.find("model_name").asString().c_str();
 
-        tensorFlowInference = std::unique_ptr<TensorFlowInference>(new TensorFlowInference(graphPath, labelsPath));
-    }
+        tensorFlowInference = std::unique_ptr<TensorFlowInference>(new TensorFlowInference(graphPath, labelsPath, modelName));
+
 }
 
 ObjectRecognitionInferThread::~ObjectRecognitionInferThread() {

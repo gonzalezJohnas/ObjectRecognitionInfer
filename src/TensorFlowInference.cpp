@@ -13,7 +13,7 @@ using tensorflow::int32;
 using tensorflow::TensorShape;
 
 
-TensorFlowInference::TensorFlowInference(std::string t_pathGraph, std::string t_pathLabels) {
+TensorFlowInference::TensorFlowInference(std::string t_pathGraph, std::string t_pathLabels,  std::string model_name) {
 
     this->pathToGraph = t_pathGraph;
     this->pathToLabels = t_pathLabels;
@@ -21,11 +21,9 @@ TensorFlowInference::TensorFlowInference(std::string t_pathGraph, std::string t_
     this->input_layer = "Mul";
     this->output_layer = "final_result";
 
-    this->input_width = 299;
-    this->input_height = 299;
+    initPreprocessParameters(model_name);
 
-    this->input_mean = 128;
-    this->input_std = 128;
+
 
 }
 
@@ -53,8 +51,7 @@ Status TensorFlowInference::ReadLabelsFile(const string &file_name, std::vector<
     return Status::OK();
 }
 
-tensorflow::Tensor
-TensorFlowInference::MatToTensor(cv::Mat inputImage) {
+tensorflow::Tensor TensorFlowInference::MatToTensor(cv::Mat inputImage) {
 
 
 
@@ -81,8 +78,7 @@ TensorFlowInference::MatToTensor(cv::Mat inputImage) {
     return tensorImage;
 }
 
-tensorflow::Status
-TensorFlowInference::LoadGraph(const std::string &graph_file_name, std::unique_ptr<tensorflow::Session> *session) {
+tensorflow::Status TensorFlowInference::LoadGraph(const std::string &graph_file_name, std::unique_ptr<tensorflow::Session> *session) {
     tensorflow::GraphDef graph_def;
     Status load_graph_status =
             ReadBinaryProto(tensorflow::Env::Default(), graph_file_name, &graph_def);
@@ -98,8 +94,7 @@ TensorFlowInference::LoadGraph(const std::string &graph_file_name, std::unique_p
     return Status::OK();
 }
 
-tensorflow::Status
-TensorFlowInference::GetTopLabels(const std::vector<Tensor> &outputs, int how_many_labels, Tensor *indices,
+tensorflow::Status TensorFlowInference::GetTopLabels(const std::vector<Tensor> &outputs, int how_many_labels, Tensor *indices,
                                   Tensor *scores) {
     auto root = tensorflow::Scope::NewRootScope();
     using namespace ::tensorflow::ops;  // NOLINT(build/namespaces)
@@ -241,6 +236,42 @@ tensorflow::Status TensorFlowInference::initGraph() {
     }
 
     return Status::OK();
+
+}
+
+void TensorFlowInference::initPreprocessParameters(std::string modelName) {
+
+    if(modelName=="inception_v3"){
+        this->input_width = 299;
+        this->input_height = 299;
+
+        this->input_mean = 128;
+        this->input_std = 128;
+    }
+
+    else{
+
+        this->input_mean = 127.5;
+        this->input_std = 127.5;
+
+        if(modelName.find("224") != std::string::npos){
+            this->input_width = 224;
+            this->input_height = 224;
+        }
+
+        else if (modelName.find("192") != std::string::npos){
+            this->input_width = 192;
+            this->input_height = 192;
+        }
+        else if (modelName.find("160") != std::string::npos){
+            this->input_width = 168;
+            this->input_height = 168;
+        }
+        else if (modelName.find("128") != std::string::npos){
+            this->input_width = 128;
+            this->input_height = 128;
+        }
+    }
 
 }
 

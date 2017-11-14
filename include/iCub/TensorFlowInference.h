@@ -43,7 +43,7 @@ public:
      * @param pathGraph
      * @param pathLabels
      */
-    TensorFlowInference(std::string pathGraph, std::string pathLabels);
+    TensorFlowInference(std::string pathGraph, std::string pathLabels, std::string model_name);
 
 
     std::string inferObject(cv::Mat inputImage);
@@ -138,6 +138,16 @@ private:
      */
     std::string GetTopClass(const std::vector<tensorflow::Tensor> &outputs,
                                       const std::string &labels_file_name);
+
+
+    /**
+     * This functions set the right parameters according to the graph used ( InceptionV3, MobileNet...) :
+     * - Mean
+     * - Std
+     * - Input images dimensions
+     * @param modelName
+     */
+    void initPreprocessParameters(std::string modelName);;
 };
 
 

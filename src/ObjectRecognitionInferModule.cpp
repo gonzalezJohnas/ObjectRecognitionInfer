@@ -81,6 +81,14 @@ bool ObjectRecognitionInferModule::configure(yarp::os::ResourceFinder &rf) {
         return false;
     }
 
+    // Check the parameters to load the graph and associated labels
+    if (rf.find("graph_path").isNull() ||
+        rf.find("labels_path").isNull() ||
+        rf.find("model_name").isNull()) {
+        yError("Unable to find the required parameters : graph_path, labels_path, model_name");
+        return false;
+
+    }
 
     inferThread = std::unique_ptr<ObjectRecognitionInferThread>(new ObjectRecognitionInferThread(rf));
 
