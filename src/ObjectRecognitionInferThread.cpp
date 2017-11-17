@@ -23,7 +23,6 @@
  */
 
 #include "../include/iCub/ObjectRecognitionInferThread.h"
-#include <cstring>
 
 using namespace yarp::dev;
 using namespace yarp::os;
@@ -68,8 +67,10 @@ bool ObjectRecognitionInferThread::threadInit() {
         return false;  // unable to open; let RFModule know so that it won't run
     }
 
-    if(tensorFlowInference->initGraph() != tensorflow::Status::OK()){
-        yError("Unable to initialize the graph, check the graph and labels path");
+    tensorflow::Status initGraphStatus = tensorFlowInference->initGraph();
+
+    if( initGraphStatus != tensorflow::Status::OK()){
+        yError(initGraphStatus.ToString());
         return false;
     }
 

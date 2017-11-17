@@ -61,6 +61,7 @@ private:
     std::string pathToGraph;
     std::string pathToLabels;
     std::string input_layer;
+    std::string model_name;
 
     std::string output_layer;
     tensorflow::int32 input_width, input_height;
@@ -147,7 +148,7 @@ private:
      * - Input images dimensions
      * @param modelName
      */
-    void initPreprocessParameters(std::string modelName);;
+    bool initPreprocessParameters(std::string modelName);;
 };
 
 

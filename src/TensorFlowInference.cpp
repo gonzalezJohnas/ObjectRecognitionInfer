@@ -13,16 +13,14 @@ using tensorflow::int32;
 using tensorflow::TensorShape;
 
 
-TensorFlowInference::TensorFlowInference(std::string t_pathGraph, std::string t_pathLabels,  std::string model_name) {
+TensorFlowInference::TensorFlowInference(std::string t_pathGraph, std::string t_pathLabels,  std::string t_model_name) {
 
     this->pathToGraph = t_pathGraph;
     this->pathToLabels = t_pathLabels;
 
     this->input_layer = "Mul";
     this->output_layer = "final_result";
-
-    initPreprocessParameters(model_name);
-
+    model_name = t_model_name;
 
 
 }
@@ -229,17 +227,25 @@ std::string TensorFlowInference::inferObject(cv::Mat inputImage) {
 }
 
 tensorflow::Status TensorFlowInference::initGraph() {
+
+    if(!initPreprocessParameters(model_name)){
+        return Status(tensorflow::error::FAILED_PRECONDITION, "Unable to compute the model architecture, check the model_name parameters");
+
+    }
+
     Status load_graph_status = LoadGraph(this->pathToGraph, &session);
 
     if (!load_graph_status.ok()) {
         LOG(ERROR) << load_graph_status;
+        return Status(tensorflow::error::FAILED_PRECONDITION,"Unable to initialize the graph, check the graph and labels path");
     }
+
 
     return Status::OK();
 
 }
 
-void TensorFlowInference::initPreprocessParameters(std::string modelName) {
+bool TensorFlowInference::initPreprocessParameters(std::string modelName) {
 
     if(modelName=="inception_v3"){
         this->input_width = 299;
@@ -247,9 +253,10 @@ void TensorFlowInference::initPreprocessParameters(std::string modelName) {
 
         this->input_mean = 128;
         this->input_std = 128;
+
     }
 
-    else{
+    else if (modelName.find("mobilenet") != std::string::npos) {
 
         this->input_mean = 127.5;
         this->input_std = 127.5;
@@ -271,8 +278,17 @@ void TensorFlowInference::initPreprocessParameters(std::string modelName) {
             this->input_width = 128;
             this->input_height = 128;
         }
+
+        else{
+            return false;
+        }
     }
 
+    else{
+        return false;
+    }
+
+    return true;
 }
 
 
