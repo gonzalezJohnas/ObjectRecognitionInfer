@@ -56,6 +56,7 @@ private:
 
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > inputImagePort;
+    yarp::os::BufferedPort<yarp::os::Bottle> outputLabelPort;
 
 public:
     /**
@@ -107,6 +108,11 @@ public:
     */
     void setInputPortName(std::string inpPrtName);
 
+    /**
+     * Function to write into the Bottle outputLabelPort
+     * @param label
+     */
+    void writeToLabelPort(std::string label);
 
     std::string predictTopClass();
 

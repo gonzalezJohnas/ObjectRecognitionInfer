@@ -67,10 +67,16 @@ bool ObjectRecognitionInferThread::threadInit() {
         return false;  // unable to open; let RFModule know so that it won't run
     }
 
+
+    if (!outputLabelPort.open(getName("/label:o").c_str())) {
+        std::cout << ": unable to open port /label:o " << std::endl;
+        return false;  // unable to open; let RFModule know so that it won't run
+    }
+
     tensorflow::Status initGraphStatus = tensorFlowInference->initGraph();
 
     if( initGraphStatus != tensorflow::Status::OK()){
-        yError(initGraphStatus.ToString());
+        yError("%s",initGraphStatus.ToString().c_str());
         return false;
     }
 
@@ -120,6 +126,16 @@ std::string ObjectRecognitionInferThread::predictTopClass() {
 
 
     return std::__cxx11::string();
+}
+
+void ObjectRecognitionInferThread::writeToLabelPort(string label) {
+    Bottle &labelOutput = outputLabelPort.prepare();
+    labelOutput.clear();
+
+    labelOutput.addString(label);
+    outputLabelPort.write();
+
+
 }
 
 

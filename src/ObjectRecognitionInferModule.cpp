@@ -169,8 +169,10 @@ bool ObjectRecognitionInferModule::respond(const Bottle &command, Bottle &reply)
 
                     case COMMAND_VOCAB_LABEL:
                     {
+
                         const string predictedClass = inferThread->predictTopClass();
                         if(predictedClass != ""){
+                            inferThread->writeToLabelPort(predictedClass);
                             reply.addVocab(Vocab::encode("many"));
                             reply.addString(predictedClass);
                         }
