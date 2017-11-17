@@ -40,7 +40,7 @@ dependent to the architecture.
  - **model_name** => Name of the model, this is used to compute the right parameters for preprocessing (mean, std, image_size)
  
 
-### Model_name possible values ###: 
+### Model_name possible values : 
 To use the mobileNet architecture you have to specify it like this  **mobilenet_<number_weight>_<image_size>** where : 
 - number_weight can be in  {0.25|0.50|0.75|1}
 - image_size can be in {224|192|168|128}
